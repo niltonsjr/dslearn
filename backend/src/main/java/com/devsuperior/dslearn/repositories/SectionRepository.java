@@ -2,6 +2,8 @@ package com.devsuperior.dslearn.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface SectionRepository extends JpaRepository<SectionRepository, Long> {
+import com.devsuperior.dslearn.entities.Section;
+
+public interface SectionRepository extends JpaRepository<Section, Long> {
 
 }
