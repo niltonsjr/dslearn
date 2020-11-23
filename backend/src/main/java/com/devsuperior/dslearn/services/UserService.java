@@ -18,14 +18,18 @@ import com.devsuperior.dslearn.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class UserService implements UserDetailsService {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(UserService.class);
-	
+
 	@Autowired
 	private UserRepository repository;
-	
+
+	@Autowired
+	private AuthService authService;
+
 	@Transactional(readOnly = true)
 	public UserDTO findById(Long id) {
+		authService.validateSelfOrAdmin(id);
 		Optional<User> obj = repository.findById(id);
 		User entity = obj.orElseThrow(() -> new ResourceNotFoundException("No se ha localizado la entidad"));
 		return new UserDTO(entity);
@@ -35,7 +39,7 @@ public class UserService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = repository.findByEmail(username);
 		if (user == null) {
-			logger.error("User not found: "+ username);
+			logger.error("User not found: " + username);
 			throw new UsernameNotFoundException("Email no encontrado");
 		}
 		logger.info("User found: " + username);
